@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href="/" class="text-sm font-medium text-indigo-600 hover:underline mb-4 inline-block">&larr; Back to all papers</a>
+
+<div class="bg-white p-6 border border-gray-200 rounded-lg shadow-sm mb-8">
+  <div class="flex items-center justify-between mb-3">
+    <span class="text-xs font-semibold bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full uppercase">{{ paper.category }}</span>
+    <span class="text-xs text-gray-400">{{ paper.created_at|date:"M d, Y" }}</span>
+  </div>
+  <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ paper.title }}</h1>
+  <p class="text-xs text-gray-500 mb-6">Submitted by <strong class="text-gray-700">{{ paper.author.username }}</strong></p>
+  
+  <h3 class="text-xs uppercase tracking-wider font-semibold text-gray-400 mb-2">Abstract</h3>
+  <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{{ paper.abstract }}</p>
+
+  {% if paper.pdf_url %}
+    <div class="mt-6 pt-4 border-t border-gray-100">
+      <a href="{{ paper.pdf_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+        Read Document / External Link &rarr;
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Reviews Section -->
+<h3 class="text-xl font-bold text-gray-900 mb-4">Peer Reviews ({{ paper.reviews.count }})</h3>
+<div class="space-y-3 mb-8">
+  {% for r in paper.reviews.all %}
+    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div class="flex justify-between items-center mb-1">
+        <span class="font-semibold text-sm text-gray-800">{{ r.reviewer.username }}</span>
+        <span class="text-xs bg-amber-50 text-amber-700 font-bold px-2 py-0.5 rounded border border-amber-200">Score: {{ r.score }}/5</span>
+      </div>
+      <p class="text-gray-700 text-sm mt-2 leading-relaxed">{{ r.feedback }}</p>
+    </div>
+  {% empty %}
+    <p class="text-gray-500 text-sm italic">No reviews yet. Be the first to critique this paper!</p>
+  {% endfor %}
+</div>
+
+<!-- Review Form -->
+{% if user.is_authenticated %}
+  <div class="bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
+    <h4 class="font-bold text-gray-900 mb-3">Submit Your Review</h4>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Score (1 = Needs Major Work, 5 = Excellent)</label>
+        <select name="score" class="border border-gray-300 rounded-md p-2 text-sm w-32 focus:ring-2 focus:ring-indigo-500 focus:outline-none" required>
+          <option value="5">5 - Excellent</option>
+          <option value="4">4 - Good</option>
+          <option value="3">3 - Average</option>
+          <option value="2">2 - Poor</option>
+          <option value="1">1 - Unsatisfactory</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Feedback & Critique</label>
+        <textarea name="feedback" rows="3" placeholder="Provide constructive feedback..." class="w-full border border-gray-300 rounded-md p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" required></textarea>
+      </div>
+      <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md text-sm transition">Post Review</button>
+    </form>
+  </div>
+{% else %}
+  <p class="text-sm text-gray-500"><a href="{% url 'login' %}" class="text-indigo-600 underline font-medium">Log in</a> to leave a peer review.</p>
+{% endif %}
+{% endblock %}
