@@ -4,17 +4,10 @@ from portal import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    # Built-in Auth (Login, Logout)
+    path('setup-admin-once/', views.create_admin_once),
     path('accounts/', include('django.contrib.auth.urls')),
-    
-    # Custom Signup
     path('accounts/signup/', views.signup, name='signup'),
-    
-    # Application Routes
     path('', views.paper_list, name='paper_list'),
     path('paper/<int:pk>/', views.paper_detail, name='paper_detail'),
     path('submit/', views.submit_paper, name='submit_paper'),
 ]
-
-path('setup-admin-once/', views.create_admin_once),
