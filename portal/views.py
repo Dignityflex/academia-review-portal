@@ -69,8 +69,3 @@ def signup(request):
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
-def create_admin_once(request):
-    if not User.objects.filter(username='admin').exists():
-        User.objects.create_superuser('admin', 'admin@example.com', 'AdminPass123!')
-        return HttpResponse("Superuser created successfully: admin / AdminPass123!")
-    return HttpResponse("Admin already exists.")
