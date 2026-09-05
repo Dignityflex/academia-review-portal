@@ -9,6 +9,6 @@ urlpatterns = [
     path('', views.paper_list, name='paper_list'),
     path('paper/<int:pk>/', views.paper_detail, name='paper_detail'),
     path('submit/', views.submit_paper, name='submit_paper'),
-    path('setup-admin-once/', views.create_admin_once),
+    
 ]
 

@@ -66,15 +66,3 @@ def signup(request):
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
 
-from django.contrib.auth.models import User
-from django.http import HttpResponse
-
-
-def create_admin_once(request):
-    user, created = User.objects.get_or_create(username='admin')
-    user.set_password('AdminPass123!')
-    user.is_staff = True
-    user.is_superuser = True
-    user.is_active = True
-    user.save()
-    return HttpResponse("Admin account successfully reset: username: admin | password: AdminPass123!")
